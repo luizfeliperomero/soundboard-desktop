@@ -9,12 +9,14 @@ Player::Player(std::string audio_name, std::string audio_file_path) {
     this->shape.setSize(sf::Vector2f(230.0f, 200.0f));
     this->loop_shape.setSize(sf::Vector2f(120.0f, 30.0f));
     this->is_playing = false;
+    load_audio_from_file();
 }
 
 Player::Player() {
     this->shape.setSize(sf::Vector2f(230.0f, 200.0f));
     this->loop_shape.setSize(sf::Vector2f(120.0f, 30.0f));
     this->is_playing = false;
+    load_audio_from_file();
 }
 
 std::string Player::get_audio_name() const {
