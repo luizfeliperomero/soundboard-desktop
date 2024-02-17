@@ -13,10 +13,10 @@ class Player {
         sf::RectangleShape loop_shape;
         sf::RectangleShape options_shape;
         sf::SoundBuffer buffer;
-        sf::Sound sound;
         sf::Sprite loop_btn_sprite;
         std::unique_ptr<sf::Texture> loop_toggle_btn;
     public:
+        sf::Sound sound;
         bool sound_loaded;
         void on_click();
         void play();

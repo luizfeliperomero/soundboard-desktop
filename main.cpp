@@ -66,6 +66,9 @@ int main() {
                 p.set_loop();
                 user_clicked = false;
             }
+            if(p.sound.getStatus() == sf::SoundSource::Status::Stopped) {
+                p.get_shape().setOutlineThickness(0);
+            }
             window.draw(p.get_shape());
             window.draw(p.get_center_text());
             window.draw(p.get_loop_shape());
