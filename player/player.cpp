@@ -9,6 +9,7 @@ Player::Player(std::string audio_name, std::string audio_file_path) {
     this->shape.setSize(sf::Vector2f(230.0f, 200.0f));
     this->loop_shape.setSize(sf::Vector2f(120.0f, 30.0f));
     this->is_playing = false;
+    this->first_time_playing = true;
     load_audio_from_file();
 }
 
@@ -16,6 +17,7 @@ Player::Player() {
     this->shape.setSize(sf::Vector2f(230.0f, 200.0f));
     this->loop_shape.setSize(sf::Vector2f(120.0f, 30.0f));
     this->is_playing = false;
+    this->first_time_playing = true;
     load_audio_from_file();
 }
 
@@ -70,7 +72,11 @@ sf::RectangleShape& Player::get_loop_shape() {
 }
 
 void Player::on_click() {
-    set_is_playing();
+    if(!first_time_playing) {
+        set_is_playing();
+    } else {
+        is_playing = false;
+    }
     if(is_playing) {
         pause();
         shape.setOutlineColor(sf::Color::White);
@@ -78,6 +84,7 @@ void Player::on_click() {
         play();
         shape.setOutlineThickness(3.0f);
         shape.setOutlineColor(sf::Color::Green);
+        first_time_playing = false;
     }
 }
 

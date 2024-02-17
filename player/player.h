@@ -17,6 +17,7 @@ class Player {
         void play();
         void pause();
         bool is_playing;
+        bool first_time_playing;
         void set_is_playing();
         sf::RectangleShape shape;
         sf::Font font;

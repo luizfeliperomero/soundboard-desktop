@@ -8,6 +8,13 @@ int main() {
     sf::RenderWindow window(sf::VideoMode(1920, 1080), "RPG SOUNDBOARD");
     window.setFramerateLimit(60);
     Player players[31];
+    sf::Vector2f mouse_click_position;
+    bool player_clicked{false};
+
+    for(auto &p : players) {
+        p.set_audio_file_path("/home/luizf/Projects/rpg-soundboard-desktop/sounds/darkfantasy.wav");
+        p.set_audio_name("Dark Fantasy");
+    }
 
     while (window.isOpen())
     {
@@ -16,6 +23,17 @@ int main() {
         {
            if (event.type == sf::Event::Closed)
                 window.close();
+            if (event.type == sf::Event::MouseButtonPressed) {
+                sf::Vector2i mouse_position = sf::Mouse::getPosition(window);
+                sf::Vector2f world_position = window.mapPixelToCoords(mouse_position);
+                sf::CircleShape dot(10.0f);
+                dot.setPosition(world_position);
+                dot.setFillColor(sf::Color::Red);
+                window.draw(dot);
+
+                mouse_click_position = world_position;
+                player_clicked = true;
+            }
         }
 
         window.clear(sf::Color(174, 198, 207, 1));
@@ -31,8 +49,6 @@ int main() {
         bool draw{true};
 
         for(auto &p : players) {
-            //p.set_audio_file_path("/home/luizf/Projects/rpg-soundboard-desktop/sounds/darkfantasy.wav");
-            p.set_audio_name("Dark Fantasy");
             p.get_shape().setPosition(x, y);
             if(!draw) {
                 break;
@@ -48,13 +64,9 @@ int main() {
                 }
             }
 
-            if (event.type == sf::Event::MouseButtonPressed) {
-                sf::Vector2i mouse_position = sf::Mouse::getPosition(window);
-                sf::Vector2f world_position = window.mapPixelToCoords(mouse_position);
-
-                if( p.shape.getGlobalBounds().contains(world_position)) {
-                    p.on_click();
-                }
+            if(player_clicked && p.shape.getGlobalBounds().contains(mouse_click_position)) {
+                p.on_click();
+                player_clicked = false;
             }
             window.draw(p.get_shape());
             window.draw(p.get_center_text());
