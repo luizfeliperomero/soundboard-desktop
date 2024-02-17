@@ -71,6 +71,7 @@ int main() {
             window.draw(p.get_shape());
             window.draw(p.get_center_text());
             window.draw(p.get_loop_shape());
+            window.draw(p.get_options_shape());
         }
 
         window.display();

@@ -3,21 +3,41 @@
 #include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
 
+void Player::set_loop_shape_design() {
+    this->loop_shape.setSize(sf::Vector2f(120.0f, 30.0f));
+    this->loop_shape.setFillColor(sf::Color(211, 211, 211));
+}
+
+void Player::set_options_shape_design() {
+    this->options_shape.setSize(sf::Vector2f(40.0f, 140.0f));
+    this->options_shape.setFillColor(sf::Color(211, 211, 211));
+}
+
+void Player::set_shape_design() {
+    this->shape.setSize(sf::Vector2f(230.0f, 200.0f));
+    this->shape.setFillColor(sf::Color(128,128,128));
+}
+
+void Player::set_shapes_design() {
+    set_shape_design();
+    set_loop_shape_design();
+    set_options_shape_design();
+}
+
+
 Player::Player(std::string audio_name, std::string audio_file_path) {
     this->audio_name = audio_name;
     this->audio_file_path = audio_file_path;
-    this->shape.setSize(sf::Vector2f(230.0f, 200.0f));
-    this->loop_shape.setSize(sf::Vector2f(120.0f, 30.0f));
+    set_shapes_design();
     this->is_playing = false;
     this->first_time_playing = true;
     load_audio_from_file();
 }
 
 Player::Player() {
-    this->shape.setSize(sf::Vector2f(230.0f, 200.0f));
-    this->loop_shape.setSize(sf::Vector2f(120.0f, 30.0f));
     this->is_playing = false;
     this->first_time_playing = true;
+    set_shapes_design();
     load_audio_from_file();
 }
 
@@ -62,13 +82,18 @@ void Player::set_shape_position(int top, int left) {
 sf::RectangleShape& Player::get_shape() {
     font.loadFromFile("/home/luizf/Projects/rpg-soundboard-desktop/assets/fonts/Poppins-Regular.ttf");
     center_text = sf::Text{audio_name, font, 20};
-    center_text.setFillColor(sf::Color::Black);
+    center_text.setFillColor(sf::Color::White);
     return shape;
 }
 
 sf::RectangleShape& Player::get_loop_shape() {
     loop_shape.setPosition(this->shape.getPosition().x + this->shape.getSize().x / 2 - loop_shape.getLocalBounds().width / 2, this->shape.getPosition().y - loop_shape.getLocalBounds().height);
     return loop_shape;
+}
+
+sf::RectangleShape& Player::get_options_shape() {
+    options_shape.setPosition(this->shape.getPosition().x - this->options_shape.getLocalBounds().width, this->shape.getPosition().y + this->shape.getSize().y / 2 - options_shape.getLocalBounds().height / 2);
+    return options_shape;
 }
 
 void Player::on_click() {
@@ -79,7 +104,7 @@ void Player::on_click() {
     }
     if(is_playing) {
         pause();
-        shape.setOutlineColor(sf::Color::White);
+        shape.setOutlineThickness(0);
     } else {
         play();
         shape.setOutlineThickness(3.0f);
@@ -107,3 +132,4 @@ bool Player::load_audio_from_file() {
     }
     return 0;
 }
+

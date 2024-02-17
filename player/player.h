@@ -9,6 +9,7 @@ class Player {
         sf::Text center_text;
         bool loop;
         sf::RectangleShape loop_shape;
+        sf::RectangleShape options_shape;
         sf::SoundBuffer buffer;
         sf::Sound sound;
     public:
@@ -19,7 +20,12 @@ class Player {
         bool is_playing;
         bool first_time_playing;
         void set_is_playing();
+        void set_loop_shape_design();
+        void set_shapes_design();
+        void set_shape_design();
+        void set_options_shape_design();
         sf::RectangleShape shape;
+        sf::RectangleShape& get_options_shape();
         sf::Font font;
         bool load_audio_from_file();
         Player(std::string audio_name, std::string audio_file_path);
