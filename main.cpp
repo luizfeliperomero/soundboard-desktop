@@ -1,7 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include <memory>
-#include "player/player.h"
+#include "src/player/player.h"
 
 
 int main() {
@@ -9,10 +9,10 @@ int main() {
     window.setFramerateLimit(60);
     Player players[31];
     sf::Vector2f mouse_click_position;
-    bool player_clicked{false};
+    bool user_clicked{false};
 
     for(auto &p : players) {
-        p.set_audio_file_path("/home/luizf/Projects/rpg-soundboard-desktop/sounds/darkfantasy.wav");
+        p.set_audio_file_path("/home/luizf/Projects/rpg-soundboard-desktop/sounds/thunder.wav");
         p.set_audio_name("Dark Fantasy");
     }
 
@@ -26,13 +26,8 @@ int main() {
             if (event.type == sf::Event::MouseButtonPressed) {
                 sf::Vector2i mouse_position = sf::Mouse::getPosition(window);
                 sf::Vector2f world_position = window.mapPixelToCoords(mouse_position);
-                sf::CircleShape dot(10.0f);
-                dot.setPosition(world_position);
-                dot.setFillColor(sf::Color::Red);
-                window.draw(dot);
-
                 mouse_click_position = world_position;
-                player_clicked = true;
+                user_clicked = true;
             }
         }
 
@@ -64,13 +59,18 @@ int main() {
                 }
             }
 
-            if(player_clicked && p.shape.getGlobalBounds().contains(mouse_click_position)) {
+            if(user_clicked && p.shape.getGlobalBounds().contains(mouse_click_position)) {
                 p.on_click();
-                player_clicked = false;
+                user_clicked = false;
+            } else if(user_clicked && p.get_loop_btn_sprite().getGlobalBounds().contains(mouse_click_position)) {
+                p.set_loop();
+                user_clicked = false;
             }
             window.draw(p.get_shape());
             window.draw(p.get_center_text());
             window.draw(p.get_loop_shape());
+            window.draw(p.get_loop_text());
+            window.draw(p.get_loop_btn_sprite());
             window.draw(p.get_options_shape());
         }
 

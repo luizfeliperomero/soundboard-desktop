@@ -1,7 +1,7 @@
 cc_binary(
     name = "main",
     srcs = ["main.cpp"],
-    deps = ["//player:player"],
+    deps = ["//src/player:player"],
      linkopts = [
         "-lsfml-graphics",
         "-lsfml-window",
