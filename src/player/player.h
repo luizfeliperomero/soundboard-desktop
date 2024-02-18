@@ -13,8 +13,8 @@ class Player {
         sf::RectangleShape loop_shape;
         sf::RectangleShape options_shape;
         sf::SoundBuffer buffer;
-        sf::Sprite loop_btn_sprite;
         std::unique_ptr<sf::Texture> loop_toggle_btn;
+        std::unique_ptr<sf::Texture> open_file_btn;
     public:
         sf::Sound sound;
         bool sound_loaded;
@@ -23,6 +23,7 @@ class Player {
         void pause();
         bool is_playing;
         bool first_time_playing;
+        void open_file();
         void set_is_playing();
         void set_loop_shape_design();
         void set_shapes_design();
@@ -30,6 +31,7 @@ class Player {
         void set_options_shape_design();
         void load_loop_textures();
         sf::Sprite get_loop_btn_sprite();
+        sf::Sprite get_open_file_btn_sprite();
         sf::RectangleShape shape;
         sf::RectangleShape& get_options_shape();
         sf::Font font;

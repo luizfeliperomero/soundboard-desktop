@@ -117,11 +117,36 @@ sf::RectangleShape& Player::get_shape() {
     return shape;
 }
 
+void Player::open_file() {
+    char filename[1024];
+    FILE *f = popen("zenity --file-selection", "r");
+    std::string file_path = fgets(filename, 1024, f);
+    if (!file_path.empty() && file_path.back() == '\n') {
+        file_path.pop_back();
+    }
+    std::string expected_path = "/home/luizf/Projects/rpg-soundboard-desktop/sounds/thunder.wav";
+    set_audio_file_path(file_path);
+} 
+
 sf::RectangleShape& Player::get_loop_shape() {
     loop_text = sf::Text{"LOOP", font, 14};
     loop_text.setFillColor(sf::Color::Black);
     loop_shape.setPosition(this->shape.getPosition().x + this->shape.getSize().x / 2 - loop_shape.getLocalBounds().width / 2, this->shape.getPosition().y - loop_shape.getLocalBounds().height);
     return loop_shape;
+}
+
+sf::Sprite Player::get_open_file_btn_sprite() {
+    sf::Texture texture;
+    texture.loadFromFile("/home/luizf/Projects/rpg-soundboard-desktop/assets/images/foundation_sound.png");
+    open_file_btn = std::make_unique<sf::Texture>(texture);
+    sf::Sprite sprite(*open_file_btn);
+    sf::FloatRect bounds = sprite.getLocalBounds();
+    sprite.setOrigin(bounds.width / 2, bounds.height / 2);
+    float x = options_shape.getPosition().x + options_shape.getSize().x / 2;
+    float y = options_shape.getPosition().y + 20;
+    sprite.setPosition(x, y);
+    sprite.setScale(0.3f, 0.3f);
+    return sprite;
 }
 
 sf::RectangleShape& Player::get_options_shape() {
@@ -155,12 +180,11 @@ void Player::play() {
 }
 
 bool Player::load_audio_from_file() {
-    if(audio_file_path != "" && !sound_loaded) {
+    if(audio_file_path != "") {
         if (!buffer.loadFromFile(audio_file_path)) {
             return 1;
         } else {
             sound.setBuffer(buffer);
-            sound_loaded = true;
         }
     }
     return 0;
