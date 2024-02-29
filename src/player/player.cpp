@@ -2,6 +2,7 @@
 #include <iostream>
 #include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
+#include <regex>
 
 void Player::set_loop_shape_design() {
     this->loop_shape.setSize(sf::Vector2f(120.0f, 30.0f));
@@ -24,20 +25,29 @@ void Player::set_shapes_design() {
     set_options_shape_design();
 }
 
-
 Player::Player(std::string audio_name, std::string audio_file_path) {
+    slider.setWidth(200);
+    slider.setHeight(14);
+    load_textures();
     font.loadFromFile("/home/luizf/Projects/rpg-soundboard-desktop/assets/fonts/Poppins-Regular.ttf");
     this->audio_name = audio_name;
     this->audio_file_path = audio_file_path;
+    this->loading_msg = "Loading ...";
     set_shapes_design();
     this->is_playing = false;
+    this->is_loading = false;
     this->first_time_playing = true;
     load_audio_from_file();
 }
 
 Player::Player() {
+    slider.setWidth(200);
+    slider.setHeight(15);
+    load_textures();
     font.loadFromFile("/home/luizf/Projects/rpg-soundboard-desktop/assets/fonts/Poppins-Regular.ttf");
+    this->loading_msg = "Loading ...";
     this->is_playing = false;
+    this->is_loading = false;
     this->first_time_playing = true;
     set_shapes_design();
     load_audio_from_file();
@@ -53,6 +63,27 @@ void Player::set_is_playing() {
 
 void Player::set_audio_name(std::string name) {
     this->audio_name = name;
+}
+
+
+int Player::get_id() {
+    return id;
+}
+
+void Player::set_id(int id) {
+    this->id = id;
+}
+
+void Player::draw(sf::RenderWindow& window) {
+    window.draw(get_shape());
+    window.draw(get_center_text());
+    window.draw(get_loop_shape());
+    window.draw(get_loop_text());
+    window.draw(get_loop_btn_sprite());
+    window.draw(get_options_shape());
+    window.draw(get_open_file_btn_sprite());
+    window.draw(get_edit_btn_sprite());
+    slider.draw(window);
 }
 
 std::string Player::get_audio_file_path() const {
@@ -78,6 +109,13 @@ bool Player::is_looping() {
 }
 
 sf::Text Player::get_center_text() {
+    std::string title;
+    if(is_loading) {
+        title = loading_msg; 
+    } else {
+        title = audio_name; 
+    }
+    center_text = sf::Text{title, font, 20};
     center_text.setPosition(this->shape.getPosition().x + this->shape.getSize().x / 2 - center_text.getLocalBounds().width / 2, this->shape.getPosition().y + this->shape.getSize().y / 2 - center_text.getLocalBounds().height / 2);
     return center_text;
 }
@@ -102,6 +140,21 @@ sf::Sprite Player::get_loop_btn_sprite() {
     return sprite;
 }
 
+sf::Sprite Player::get_edit_btn_sprite() {
+    sf::Sprite sprite(*edit_btn); 
+    int spacing = 20;
+    int margin = 13;
+    sprite.setPosition(get_open_file_btn_sprite().getPosition().x - margin, get_open_file_btn_sprite().getPosition().y + spacing); 
+    sprite.setScale(0.8f, 0.8f);
+    return sprite;
+}
+
+void Player::load_textures() {
+    sf::Texture edit_btn_texture; 
+    edit_btn_texture.loadFromFile("/home/luizf/Projects/rpg-soundboard-desktop/assets/images/ep_edit.png");
+    edit_btn = std::make_unique<sf::Texture>(edit_btn_texture);
+}
+
 sf::Text Player::get_loop_text() {
     loop_text.setPosition(this->loop_shape.getPosition().x + this->loop_shape.getSize().x / 3 - loop_text.getLocalBounds().width / 2, this->loop_shape.getPosition().y + this->loop_shape.getSize().y / 2 - loop_text.getLocalBounds().height / 2);
     return loop_text;
@@ -112,7 +165,6 @@ void Player::set_shape_position(int top, int left) {
 }
 
 sf::RectangleShape& Player::get_shape() {
-    center_text = sf::Text{audio_name, font, 20};
     center_text.setFillColor(sf::Color::White);
     return shape;
 }
@@ -181,10 +233,12 @@ void Player::play() {
 
 bool Player::load_audio_from_file() {
     if(audio_file_path != "") {
+        is_loading = true;
         if (!buffer.loadFromFile(audio_file_path)) {
             return 1;
         } else {
             sound.setBuffer(buffer);
+            is_loading = false;
         }
     }
     return 0;
